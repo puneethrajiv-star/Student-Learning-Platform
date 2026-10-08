@@ -15,13 +15,27 @@ import ThemeControls from "./components/ThemeControls";
 import TypingPractice from "./components/TypingPractice";
 import type { Screen } from "./components/types";
 
+import { getToken } from "./api";
+
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("landing");
+  const [screen, setScreen] = useState<Screen>(() => {
+    const saved = localStorage.getItem("edubridge_screen") as Screen | null;
+    const token = getToken();
+    if (token) {
+      if (saved && saved !== "landing" && saved !== "login" && saved !== "signup") {
+        return saved;
+      }
+      return "home";
+    }
+    return "landing";
+  });
+
   const [experienced, setExperienced] = useState(false);
   const screenOrder: Screen[] = ["landing", "signup", "login", "onboarding", "home", "typing", "browse", "dsa", "projects", "course"];
 
   function navigate(next: Screen) {
     if (next === screen) return;
+    localStorage.setItem("edubridge_screen", next);
     const direction = screenOrder.indexOf(next) >= screenOrder.indexOf(screen) ? "forward" : "back";
     document.documentElement.dataset.motionDirection = direction;
     const update = () => flushSync(() => setScreen(next));
