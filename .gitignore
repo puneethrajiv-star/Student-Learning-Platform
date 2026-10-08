@@ -1,0 +1,5 @@
+# Secrets
+ai/ai/src/main/resources/application.properties
+application.properties
+target/
+.vscode/
